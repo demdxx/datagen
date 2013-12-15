@@ -6,6 +6,8 @@
 # Folders
 _obj
 _test
+dg/pkg/*
+dg/bin/*
 
 # Architecture specific extensions/prefixes
 *.[568vq]
