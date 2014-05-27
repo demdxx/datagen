@@ -1,41 +1,16 @@
-#######################################################
-# @project tdatagen                                   #
-# @copiright Dmitry Ponomarev <demdxx@gmail.com> 2013 #
-# @license MIT                                        #
-#                                                     #
-# Generate data for application test                  #
-#######################################################
 {
   "project": "dg",
   "version": "0.0.1",
-  # "os": None, # Default
-  # "arch": None, # Default
-  # "arm": None, # Default
-  "paths": [
-    "{projectpath}/../lib/go"
-  ],
-  "deps": [
-    # ...
-  ],
-  # "deps": {
-  #   # "github.com/robfig/revel": {
-  #   #   "build": "{go} build -o revel {app}/revel",
-  #   # },
-  # },
+
+  "copyright": "Dmitry Ponomarev <demdxx@gmail.com> 2013",
+  "license": "MIT",
+  "description": "Generate data for application test",
 
   "apps": {
-    # default all from src
-    "dg": {
-      "run": "{go} run src/{app}/main.go"
-    },
-  },
-
-  # "apps": {
-  #   "dg": {
-  #     # Custom config
-  #   }
-  # },
-
-  # @TODO: HOOKS
-  # "hooks": {"command": {"before": ["script/path", ...]}, "after": ["script/path", ...]},
+    "datagen": {
+      "cmd": {
+        "run": "{go} run src/{app}/main.go"
+      }
+    }
+  }
 }

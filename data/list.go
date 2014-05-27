@@ -1,29 +1,53 @@
 package data
 
 type List struct {
-  IList
-  items   []IItem
+  Item
+  items []interface{}
 }
 
 func MakeList() *List {
   l := &List{}
-  l.items = make([]IItem, 0, 0)
+  l.items = make([]interface{}, 0, 0)
   return l
 }
 
-func (self *List) Field(item IItem) IList {
-  self.items = append(self.items, item)
-  return self
+///////////////////////////////////////////////////////////////////////////////
+/// Base actions
+///////////////////////////////////////////////////////////////////////////////
+
+func (list *List) Fields() []interface{} {
+  return list.items
 }
 
-func (self *List) Fields() []IItem {
-  return self.items
+func (list *List) Field(item interface{}) *List {
+  list.items = append(list.items, item)
+  return list
 }
 
-func (self *List) Generate() interface{} {
-  l := make([]interface{}, 0, len(self.items))
-  for _, v := range self.items {
-    l = append(l, v.Generate())
+func (list *List) Dictionary(key string) *Dictionary {
+  dict := &Dictionary{Item{parent: list}}
+  list.fields[key] = dict
+  return dict
+}
+
+func (list *List) List() *List {
+  l := &List{Item{parent: list}}
+  list.items = append(list.items, l)
+  return list
+}
+
+func (list *List) Parent() *Item {
+  return list.Item.Parent()
+}
+
+func (list *List) Generate() interface{} {
+  l := make([]interface{}, 0, len(list.items))
+  for _, v := range list.items {
+    if ie, ok := v.(IItem); ok {
+      l = append(l, ie.Generate())
+    } else {
+      l = append(l, errors.New(fmt.Sprint("Invalid field type %s", k)))
+    }
   }
   return l
 }

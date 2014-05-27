@@ -1,30 +1,58 @@
 package data
 
+import (
+  "errors"
+  "fmt"
+)
+
 type Dictionary struct {
-  IDictionary
-  fields  map[string]IItem
+  Item
+  fields map[string]interface{}
 }
 
 func MakeDictionary() *Dictionary {
   m := &Dictionary{}
-  m.fields = make(map[string]IItem)
+  m.fields = make(map[string]interface{})
   return m
 }
 
-func (self *Dictionary) Field(key string, item IItem) IDictionary {
-  self.fields[key] = item
-  return self.IDictionary
+///////////////////////////////////////////////////////////////////////////////
+/// Base actions
+///////////////////////////////////////////////////////////////////////////////
+
+func (dict *Dictionary) Fields() map[string]interface{} {
+  return dict.fields
 }
 
-func (self *Dictionary) Fields() map[string]IItem {
-  return self.fields
+func (dict *Dictionary) Field(key string, item IItem) *Dictionary {
+  dict.fields[key] = item
+  return dict
 }
 
-func (self *Dictionary) Generate() interface{} {
+func (dict *Dictionary) Dictionary(key string) *Dictionary {
+  d := &Dictionary{Item{parent: dict}}
+  dict.fields[key] = d
+  return d
+}
+
+func (dict *Dictionary) List(key string) *List {
+  list := &List{Item{parent: dict}}
+  dict.fields[key] = list
+  return list
+}
+
+func (dict *Dictionary) Parent() *Item {
+  return dict.Item.Parent()
+}
+
+func (dict *Dictionary) Generate() interface{} {
   m := make(map[string]interface{})
-  for k, v := range self.fields {
-    m[k] = v.Generate()
+  for k, v := range dict.fields {
+    if ie, ok := v.(IItem); ok {
+      m[k] = ie.Generate()
+    } else {
+      m[k] = errors.New(fmt.Sprint("Invalid field type %s", k))
+    }
   }
   return m
 }
-
