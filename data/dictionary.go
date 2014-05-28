@@ -23,7 +23,7 @@ func MakeDictionary() *Dictionary {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Base actions
+/// Getters/Setters
 ///////////////////////////////////////////////////////////////////////////////
 
 func (dict *Dictionary) Fields() map[string]interface{} {
@@ -61,4 +61,25 @@ func (dict *Dictionary) Generate() interface{} {
     }
   }
   return m
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Generators
+///////////////////////////////////////////////////////////////////////////////
+
+// An Infinity generator
+func (dict *Dictionary) Generator() *Generator {
+  return MakeGenerator(dict)
+}
+
+func (dict *Dictionary) Pages(pageSize, elements uint) *PageGenerator {
+  return MakePageGenerator(dict, pageSize, elements)
+}
+
+func (dict *Dictionary) Set(count uint) chan interface{} {
+  return dict.Generator().Set(count)
+}
+
+func (dict *Dictionary) SetRandom(min, max uint) chan interface{} {
+  return dict.Generator().SetRandom(min, max)
 }

@@ -6,103 +6,46 @@
 
 package data
 
-type IGenerator interface {
-  Count() int
-  PageCount() int
-  PageItemsCount(page int) int
-
-  SetStructInfo(info IContainer) IGenerator
-  GetMaxItemCount() int
-  SetMaxItemCount(count int) IGenerator
-  GetMinItemCount() int
-  SetMinItemCount(count int) IGenerator
-
-  Next() interface{}
-  Get(i int) interface{}
-  Generator() chan interface{}
-  Page(page int) chan interface{}
+type Generator struct {
+  structInfo *Item
 }
 
-type Generator struct {
-  IGenerator
-
-  structInfo IContainer
-
-  maxItemCount int
-  minItemCount int
-  pageSize     int
-  pageCount    int
+func MakeGenerator(structInfo *Item) *Generator {
+  return &Generator{structInfo: structInfo}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Getters/Setters
 ///////////////////////////////////////////////////////////////////////////////
 
-func (self *Generator) Count() int {
-  return self.pageSize * self.pageCount
+func (gen *Generator) SetStructInfo(info *Item) *Generator {
+  gen.structInfo = info
+  return gen.IGenerator
 }
 
-func (self *Generator) PageCount() int {
-  return self.pageCount
+func (gen *Generator) Next() interface{} {
+  return gen.structInfo.Generate()
 }
 
-func (self *Generator) PageItemsCount(page int) int {
-  return self.pageSize
-}
-
-func (self *Generator) SetStructInfo(info IContainer) IGenerator {
-  self.structInfo = info
-  return self.IGenerator
-}
-
-func (self *Generator) GetMaxItemCount() int {
-  return self.maxItemCount
-}
-
-func (self *Generator) SetMaxItemCount(count int) IGenerator {
-  self.maxItemCount = count
-  return self.IGenerator
-}
-
-func (self *Generator) GetMinItemCount() int {
-  return self.minItemCount
-}
-
-func (self *Generator) SetMinItemCount(count int) IGenerator {
-  self.minItemCount = count
-  return self.IGenerator
-}
-
-func (self *Generator) Next() interface{} {
-  return self.structInfo.Generate()
-}
-
-func (self *Generator) Get(item int) interface{} {
-  return self.Next()
+func (gen *Generator) Get(item uint) interface{} {
+  return gen.Next()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Generators
 ///////////////////////////////////////////////////////////////////////////////
 
-func (self *Generator) Page(page int) chan interface{} {
+func (gen *Generator) Set(count uint) chan interface{} {
   out := make(chan interface{})
   go func() {
-    for i := page * self.pageSize; i < (1+page)*self.pageSize; i++ {
-      out <- self.Get(i)
+    for i := 0; i < count; i++ {
+      out <- gen.Get(i)
     }
     close(out)
   }()
   return out
 }
 
-func (self *Generator) Generator() chan interface{} {
-  out := make(chan interface{})
-  go func() {
-    for i := 0; i < self.Count(); i++ {
-      out <- self.Get(i)
-    }
-    close(out)
-  }()
-  return out
+func (gen *Generator) SetRandom(min, max uint) chan interface{} {
+  return gen.Set((uint)(rand.Intn(int(max)-int(min))) + min)
 }

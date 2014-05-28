@@ -13,11 +13,17 @@ import (
 type IItem interface {
   Parent() *Item
   Generate() interface{}
+  Pages(pagecount, pagesize int) *Generator
+  Set(elements int) *Generator
 }
 
 type Item struct {
   parent *Item
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Getters/Setters
+///////////////////////////////////////////////////////////////////////////////
 
 func (item *Item) Parent() *Item {
   return item.parent
@@ -25,4 +31,25 @@ func (item *Item) Parent() *Item {
 
 func (item *Item) Generate() interface{} {
   return errors.New("Empty field generator")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Generators
+///////////////////////////////////////////////////////////////////////////////
+
+// An Infinity generator
+func (item *Item) Generator() *Generator {
+  return MakeGenerator(item)
+}
+
+func (item *Item) Pages(pageSize, elements uint) *PageGenerator {
+  return MakePageGenerator(item, pageSize, elements)
+}
+
+func (item *Item) Set(count uint) chan interface{} {
+  return item.Generator().Set(count)
+}
+
+func (item *Item) SetRandom(min, max uint) chan interface{} {
+  return item.Generator().SetRandom(min, max)
 }
