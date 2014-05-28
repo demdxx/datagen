@@ -6,11 +6,12 @@
   "license": "MIT",
   "description": "Generate data for application test",
 
-  "apps": {
-    "datagen": {
-      "cmd": {
-        "run": "{go} run {path}/main.go"
-      }
-    }
+  "cmd": {
+    "run": "{go} run {path}/main.go",
+    "test": [
+      "{go} test -v {path}/builder",
+      "{go} test -v {path}/data",
+      "{go} test -v {path}/generator"
+    ]
   }
 }

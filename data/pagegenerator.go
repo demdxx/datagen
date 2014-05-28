@@ -16,7 +16,7 @@ type PageGenerator struct {
   ElementsCount uint
 }
 
-func MakePageGenerator(structInfo *Item, pageSize, elements uint) *Generator {
+func MakePageGenerator(structInfo IItem, pageSize, elements uint) *PageGenerator {
   return &PageGenerator{Generator{structInfo: structInfo}, PageSize: pageSize, ElementsCount: elements}
 }
 

@@ -7,8 +7,8 @@
 package builder
 
 import (
-  "dg/data"
-  "dg/generator"
+  "datagen/data"
+  "datagen/generator"
 )
 
 type Builder struct {

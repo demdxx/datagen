@@ -11,21 +11,23 @@ import (
 )
 
 type IItem interface {
-  Parent() *Item
+  Parent() IItem
   Generate() interface{}
-  Pages(pagecount, pagesize int) *Generator
-  Set(elements int) *Generator
+  Generator() *Generator
+  Pages(pagecount, pagesize uint) *PageGenerator
+  Set(elements uint) chan interface{}
+  SetRandom(min, max uint) chan interface{}
 }
 
 type Item struct {
-  parent *Item
+  parent IItem
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Getters/Setters
 ///////////////////////////////////////////////////////////////////////////////
 
-func (item *Item) Parent() *Item {
+func (item *Item) Parent() IItem {
   return item.parent
 }
 

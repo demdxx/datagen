@@ -6,11 +6,15 @@
 
 package data
 
+import (
+  "math/rand"
+)
+
 type Generator struct {
-  structInfo *Item
+  structInfo IItem
 }
 
-func MakeGenerator(structInfo *Item) *Generator {
+func MakeGenerator(structInfo IItem) *Generator {
   return &Generator{structInfo: structInfo}
 }
 
@@ -18,9 +22,9 @@ func MakeGenerator(structInfo *Item) *Generator {
 /// Getters/Setters
 ///////////////////////////////////////////////////////////////////////////////
 
-func (gen *Generator) SetStructInfo(info *Item) *Generator {
+func (gen *Generator) SetStructInfo(info IItem) *Generator {
   gen.structInfo = info
-  return gen.IGenerator
+  return gen
 }
 
 func (gen *Generator) Next() interface{} {
@@ -38,7 +42,8 @@ func (gen *Generator) Get(item uint) interface{} {
 func (gen *Generator) Set(count uint) chan interface{} {
   out := make(chan interface{})
   go func() {
-    for i := 0; i < count; i++ {
+    var i uint = 0
+    for ; i < count; i++ {
       out <- gen.Get(i)
     }
     close(out)

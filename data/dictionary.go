@@ -36,18 +36,20 @@ func (dict *Dictionary) Field(key string, item IItem) *Dictionary {
 }
 
 func (dict *Dictionary) Dictionary(key string) *Dictionary {
-  d := &Dictionary{Item{parent: dict}}
+  d := MakeDictionary()
+  d.Item.parent = (IItem)(dict)
   dict.fields[key] = d
   return d
 }
 
 func (dict *Dictionary) List(key string) *List {
-  list := &List{Item{parent: dict}}
+  list := MakeList()
+  list.Item.parent = (IItem)(dict)
   dict.fields[key] = list
   return list
 }
 
-func (dict *Dictionary) Parent() *Item {
+func (dict *Dictionary) Parent() IItem {
   return dict.Item.Parent()
 }
 
@@ -69,11 +71,11 @@ func (dict *Dictionary) Generate() interface{} {
 
 // An Infinity generator
 func (dict *Dictionary) Generator() *Generator {
-  return MakeGenerator(dict)
+  return MakeGenerator((IItem)(dict))
 }
 
 func (dict *Dictionary) Pages(pageSize, elements uint) *PageGenerator {
-  return MakePageGenerator(dict, pageSize, elements)
+  return MakePageGenerator((IItem)(dict), pageSize, elements)
 }
 
 func (dict *Dictionary) Set(count uint) chan interface{} {

@@ -30,16 +30,18 @@ func (list *List) Field(item interface{}) *List {
   return list
 }
 
-func (list *List) Dictionary(key string) *Dictionary {
-  dict := &Dictionary{Item{parent: list}}
-  list.fields[key] = dict
+func (list *List) Dictionary() *Dictionary {
+  dict := MakeDictionary()
+  dict.Item.parent = (IItem)(list)
+  list.items = append(list.items, dict)
   return dict
 }
 
 func (list *List) List() *List {
   l := &List{Item{parent: list}}
+  l.Item.parent = (IItem)(list)
   list.items = append(list.items, l)
-  return list
+  return l
 }
 
 func (list *List) Parent() *Item {
@@ -56,4 +58,25 @@ func (list *List) Generate() interface{} {
     }
   }
   return l
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Generators
+///////////////////////////////////////////////////////////////////////////////
+
+// An Infinity generator
+func (list *List) Generator() *Generator {
+  return MakeGenerator((IItem)(List))
+}
+
+func (list *List) Pages(pageSize, elements uint) *PageGenerator {
+  return MakePageGenerator((IItem)(List), pageSize, elements)
+}
+
+func (list *List) Set(count uint) chan interface{} {
+  return List.Generator().Set(count)
+}
+
+func (list *List) SetRandom(min, max uint) chan interface{} {
+  return dict.Generator().SetRandom(min, max)
 }
