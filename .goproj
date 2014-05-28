@@ -1,6 +1,6 @@
 {
   "project": "dg",
-  "version": "0.0.1",
+  "version": "0.1.0",
 
   "copyright": "Dmitry Ponomarev <demdxx@gmail.com> 2013",
   "license": "MIT",
@@ -9,7 +9,7 @@
   "apps": {
     "datagen": {
       "cmd": {
-        "run": "{go} run src/{app}/main.go"
+        "run": "{go} run {path}/main.go"
       }
     }
   }

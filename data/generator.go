@@ -1,4 +1,10 @@
-package data;
+// @project datagen
+// @copyright Dmitry Ponomarev <demdxx@gmail.com> 2014
+//
+// This work is licensed under the Creative Commons Attribution 4.0 International License.
+// To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+
+package data
 
 type IGenerator interface {
   Count() int
@@ -20,12 +26,12 @@ type IGenerator interface {
 type Generator struct {
   IGenerator
 
-  structInfo    IContainer
+  structInfo IContainer
 
-  maxItemCount  int
-  minItemCount  int
-  pageSize      int
-  pageCount     int
+  maxItemCount int
+  minItemCount int
+  pageSize     int
+  pageCount    int
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +88,7 @@ func (self *Generator) Get(item int) interface{} {
 func (self *Generator) Page(page int) chan interface{} {
   out := make(chan interface{})
   go func() {
-    for i := page * self.pageSize ; i < (1 + page) * self.pageSize ; i++ {
+    for i := page * self.pageSize; i < (1+page)*self.pageSize; i++ {
       out <- self.Get(i)
     }
     close(out)
@@ -93,7 +99,7 @@ func (self *Generator) Page(page int) chan interface{} {
 func (self *Generator) Generator() chan interface{} {
   out := make(chan interface{})
   go func() {
-    for i := 0 ; i < self.Count() ; i++ {
+    for i := 0; i < self.Count(); i++ {
       out <- self.Get(i)
     }
     close(out)

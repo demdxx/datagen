@@ -1,10 +1,16 @@
+// @project datagen
+// @copyright Dmitry Ponomarev <demdxx@gmail.com> 2014
+//
+// This work is licensed under the Creative Commons Attribution 4.0 International License.
+// To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+
 package generator
 
 import (
-  "dg/data"
   "bytes"
-  "strings"
+  "datagen/data"
   "errors"
+  "strings"
 )
 
 type IGenerator interface {
@@ -19,8 +25,8 @@ type IGenerator interface {
 
 type Generator struct {
   IGenerator
-  source        ISource
-  structInfo    data.IContainer
+  source     ISource
+  structInfo data.IContainer
 }
 
 func (self *Generator) SetSource(source ISource) IGenerator {
@@ -58,24 +64,24 @@ func (self *Generator) GenerateBody() (string, error) {
 func (self *Generator) GenerateStructure() (string, error) {
   var buffer bytes.Buffer
   switch self.structInfo.(type) {
-    case data.IDictionary:
-      for k1, v1 := range self.structInfo.(data.IDictionary).Fields() {
-        str1, err1 := self.GenerateKeyField(k1, v1)
-        if nil != err1 {
-          return "", err1
-        }
-        buffer.WriteString(str1)
+  case data.IDictionary:
+    for k1, v1 := range self.structInfo.(data.IDictionary).Fields() {
+      str1, err1 := self.GenerateKeyField(k1, v1)
+      if nil != err1 {
+        return "", err1
       }
-      return buffer.String(), nil
-    case data.IList:
-      for _, v2 := range self.structInfo.(data.IList).Fields() {
-        str2, err2 := self.GenerateField(v2)
-        if nil != err2 {
-          return "", err2
-        }
-        buffer.WriteString(str2)
+      buffer.WriteString(str1)
+    }
+    return buffer.String(), nil
+  case data.IList:
+    for _, v2 := range self.structInfo.(data.IList).Fields() {
+      str2, err2 := self.GenerateField(v2)
+      if nil != err2 {
+        return "", err2
       }
-      return buffer.String(), nil
+      buffer.WriteString(str2)
+    }
+    return buffer.String(), nil
   }
   return "", errors.New("Invalid structure container")
 }
@@ -83,22 +89,22 @@ func (self *Generator) GenerateStructure() (string, error) {
 func (self *Generator) GenerateField(item data.IItem) (string, error) {
   var buffer bytes.Buffer
   switch item.(type) {
-    case data.IDictionary:
-      for k1, v1 := range self.structInfo.(data.IDictionary).Fields() {
-        str1, err1 := self.GenerateKeyField(k1, v1)
-        if nil != err1 {
-          return "", err1
-        }
-        buffer.WriteString(str1)
+  case data.IDictionary:
+    for k1, v1 := range self.structInfo.(data.IDictionary).Fields() {
+      str1, err1 := self.GenerateKeyField(k1, v1)
+      if nil != err1 {
+        return "", err1
       }
-    case data.IList:
-      for _, v1 := range self.structInfo.(data.IList).Fields() {
-        str1, err1 := self.GenerateField(v1)
-        if nil != err1 {
-          return "", err1
-        }
-        buffer.WriteString(str1)
+      buffer.WriteString(str1)
+    }
+  case data.IList:
+    for _, v1 := range self.structInfo.(data.IList).Fields() {
+      str1, err1 := self.GenerateField(v1)
+      if nil != err1 {
+        return "", err1
       }
+      buffer.WriteString(str1)
+    }
   }
   return "", errors.New("Undefined generation type")
 }
@@ -106,5 +112,3 @@ func (self *Generator) GenerateField(item data.IItem) (string, error) {
 func (self *Generator) GenerateKeyField(key string, item data.IItem) (string, error) {
   return "", errors.New("Undefined generation type")
 }
-
-
